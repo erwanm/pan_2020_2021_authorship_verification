@@ -14,9 +14,13 @@ EPOCH = 40
 # define batch size
 BATCH_SIZE = 4
 
+# EM - Additiional text file where 'AdHominem' amd 'o2d2' predictions are written
+predict_text_output = 'predicted.tsv'
+
 # paths
 dir_data = os.path.join("..", "data_preprocessed")
-dir_results = os.path.join("..", "results_o2d2")
+#dir_results = os.path.join("..", "results_o2d2")
+dir_results = os.path.join("..", "pretrained_models", "results_o2d2")
 
 # load dev set
 with open(os.path.join(dir_data, "pairs_val"), 'rb') as f:
@@ -45,6 +49,10 @@ print("start inference...")
 pred_dml, pred_bfs, pred_ual, pred_o2d2, n_miss, conf_matrix, lev_L, lev_R, att_w_L, att_w_R, att_s_L, att_s_R \
     = adhominem.evaluate(docs_L, docs_R, batch_size=BATCH_SIZE)
 
+f = open(predict_text_output, 'w')
+for i,v in enumerate(pred_ual):
+    f.write('%d\t%f\t%f\n' % (i,v,pred_o2d2[i]))
+f.close()
 
 # compute confidence scores (p if p >= 0.5, otherwise 1-p)
 conf_dml, labels_dml = adhominem.compute_confidence(pred_dml)
