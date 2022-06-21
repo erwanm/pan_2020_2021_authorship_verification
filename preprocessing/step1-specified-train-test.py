@@ -4,7 +4,7 @@ import pickle
 import json
 from sklearn.utils import shuffle
 import random
-
+import sys
 
 #################
 # parse json file
@@ -99,29 +99,31 @@ class Corpus(object):
     def assign_data_to(self, dataset_id):
 
         if dataset_id == 'train':
-            fandoms_train = fandoms
-            authors_train = authors
-            dict_author_fandom_doc_train = dict_author_fandom_doc
+            self.fandoms_train = self.fandoms
+            self.authors_train = self.authors
+            self.dict_author_fandom_doc_train = self.dict_author_fandom_doc
+            self.n_train = len(self.dict_author_fandom_doc_train)
         elif dataset_id == 'val':
-            fandoms_val = fandoms
-            authors_val = authors
-            dict_author_fandom_doc_val= dict_author_fandom_doc
+            self.fandoms_val = self.fandoms
+            self.authors_val = self.authors
+            self.dict_author_fandom_doc_val= self.dict_author_fandom_doc
+            self.n_val = len(self.dict_author_fandom_doc_val)
         elif dataset_id == 'cal':
-            fandoms_cal = fandoms           
-            authors_cal = authors
-            dict_author_fandom_doc_cal = dict_author_fandom_doc
+            self.fandoms_cal = self.fandoms           
+            self.authors_cal = self.authors
+            self.dict_author_fandom_doc_cal = self.dict_author_fandom_doc
+            self.n_cal = len(self.dict_author_fandom_doc_cal)
         else:
             raise Error("Invalid dataset_id value, must be 'train', 'val', or 'cal'")
 
 
 # main
 
-if len(sys.argv) != 2:
-    raise ValueError('Args: <train set path prefix> <test set path prefix> <output dir>.\n  Data input as <prefix>.jsonl and <prefix>-truth.jsonl.')
+if len(sys.argv) != 3:
+    raise ValueError('Args: <train set path prefix> <test set path prefix>\n  Data input expected as <prefix>.jsonl and <prefix>-truth.jsonl.')
 
 train_prefix = sys.argv[1]
 test_prefix = sys.argv[2]
-dir_results = sys.argv[3]
 
 
 #####################################
@@ -150,7 +152,6 @@ open(file_results, 'a').write('parse test data...' + '\n')
 corpus.parse_raw_data(test_prefix)
 corpus.assign_data_to('val')
 
-
 ##############################
 # store results (binary files)
 ##############################
@@ -165,14 +166,14 @@ with open(os.path.join(dir_results, 'dict_author_fandom_doc_val'), 'wb') as f:
 # statistics
 ############
 
-open(file_results, 'a').write('# unique docs: ' + str(len(corpus.unique_docs)) + '\n')
-open(file_results, 'a').write('# unique authors: ' + str(len(corpus.authors)) + '\n')
-open(file_results, 'a').write('# unique fandoms: ' + str(len(corpus.fandoms)) + '\n')
+#open(file_results, 'a').write('# unique docs: ' + str(len(corpus.unique_docs)) + '\n')
+#open(file_results, 'a').write('# unique authors: ' + str(len(corpus.authors)) + '\n')
+#open(file_results, 'a').write('# unique fandoms: ' + str(len(corpus.fandoms)) + '\n')
 
-open(file_results, 'a').write('# docs (train): ' + str(corpus.n_train) + '\n')
-open(file_results, 'a').write('# docs (cal): ' + str(corpus.n_cal) + '\n')
-open(file_results, 'a').write('# docs (val): ' + str(corpus.n_val) + '\n')
-open(file_results, 'a').write('# docs (dropped): ' + str(corpus.n_dropped) + '\n')
+#open(file_results, 'a').write('# docs (train): ' + str(corpus.n_train) + '\n')
+#open(file_results, 'a').write('# docs (cal): ' + str(corpus.n_cal) + '\n')
+#open(file_results, 'a').write('# docs (val): ' + str(corpus.n_val) + '\n')
+#open(file_results, 'a').write('# docs (dropped): ' + str(corpus.n_dropped) + '\n')
 
 open(file_results, 'a').write('# authors (train): ' + str(len(corpus.authors_train)) + '\n')
 open(file_results, 'a').write('# authors (cal): ' + str(len(corpus.authors_cal)) + '\n')
