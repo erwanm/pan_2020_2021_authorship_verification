@@ -14,13 +14,13 @@ for expedir in "$inputdir"/*; do
 	for f in "$expedir"/*.train-truth.jsonl; do
 	    prefix=${f%.train-truth.jsonl}
 	    
-	    echo "#!/bin/bash" > "$prefix.preprocess.sbatch"
-	    echo "#SBATCH -p $parti" >> "$prefix.preprocess.sbatch"
-	    echo "#SBATCH --gres gpu:rtx2080ti:1" >> "$prefix.preprocess.sbatch"
-	    echo "#SBATCH --mem $mem" >> "$prefix.preprocess.sbatch"
-	    echo "#SBATCH -J full" >> "$prefix.preprocess.sbatch"
-	    echo 'eval "$(~/anaconda3/bin/conda shell.bash hook)"' >> "$prefix.preprocess.sbatch"
-	    echo "conda run -n PAN21 $DIR/run_full_process.sh $prefix" >> "$prefix.preprocess.sbatch"
+	    echo "#!/bin/bash" > "$prefix.sbatch"
+	    echo "#SBATCH -p $parti" >> "$prefix.sbatch"
+	    echo "#SBATCH --gres gpu:rtx2080ti:1" >> "$prefix.sbatch"
+	    echo "#SBATCH --mem $mem" >> "$prefix.sbatch"
+	    echo "#SBATCH -J full" >> "$prefix.sbatch"
+	    echo 'eval "$(~/anaconda3/bin/conda shell.bash hook)"' >> "$prefix.sbatch"
+	    echo "conda run -n PAN21 $DIR/run_full_process.sh $prefix" >> "$prefix.sbatch"
 
 	done
     fi
