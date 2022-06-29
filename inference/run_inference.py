@@ -19,8 +19,8 @@ predict_text_output = 'predicted.tsv'
 
 # paths
 dir_data = os.path.join("..", "data_preprocessed")
-#dir_results = os.path.join("..", "results_o2d2")
-dir_results = os.path.join("..", "pretrained_models", "results_o2d2")
+dir_results = os.path.join("..", "results_o2d2")
+#dir_results = os.path.join("..", "pretrained_models", "results_o2d2")
 
 # load dev set
 with open(os.path.join(dir_data, "pairs_val"), 'rb') as f:

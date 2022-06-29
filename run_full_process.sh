@@ -67,7 +67,7 @@ if [ $? -ne 0 ]; then
     echo "ERROR" 1>&2
     exit 1
 fi
-python step6_sample_pairs_val.py
+python step6-exact-test-set.py "$prefix.test"
 if [ $? -ne 0 ]; then
     echo "ERROR" 1>&2
     exit 1
@@ -92,7 +92,7 @@ fi
 
 echo "copying model 1..." 1>&2
 rm -rf "$prefix.results_adhominem"
-cp -R "results_adhominem" "$prefix.results_adhominem"
+cp -R "$tmpdir/results_adhominem" "$prefix.results_adhominem"
 
 
 echo "training model, part 2..." 1>&2
@@ -106,7 +106,7 @@ fi
 
 echo "copying model 2..." 1>&2
 rm -rf "$prefix.results_o2d2"
-cp -R "results_o2d2" "$prefix.results_o2d2"
+cp -R "$tmpdir/results_o2d2" "$prefix.results_o2d2"
 
 
 echo "inference regular..." 1>&2
