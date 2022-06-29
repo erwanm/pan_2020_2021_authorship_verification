@@ -29,7 +29,7 @@ docs_L, docs_R, labels_a, labels_c = sample_pairs_single_epoch(dict_author_fando
                                                                delta_1=0.9,
                                                                delta_2=0.9,
                                                                delta_3=0.7,
-                                                               only_SADF_and_DASF=True,
+                                                               only_SADF_and_DASF=False,
                                                                make_balanced=True,
                                                                balance_factor=1.0,
                                                                )
