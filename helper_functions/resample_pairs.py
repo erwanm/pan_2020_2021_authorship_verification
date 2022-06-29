@@ -285,7 +285,6 @@ def sample_pairs_single_epoch(author_domain_doc,
                 if r2 < delta_2:
                     d1, d2 = author_models[a].sample_DC()
                     if bool(d1):
-                        print("SA DF")
                         SA_DF.append((d1, d2, 1, 0))
 
                 ###################
@@ -295,7 +294,6 @@ def sample_pairs_single_epoch(author_domain_doc,
                     d1, d2 = author_models[a].sample_SC()
                     if bool(d1):
                         SA_SF.append((d1, d2, 1, 1))
-                        print("SA SF")
 
             else:
                 ###################
@@ -349,8 +347,6 @@ def sample_pairs_single_epoch(author_domain_doc,
     DA_SF = shuffle(DA_SF)
     DA_DF = shuffle(DA_DF)
     
-    print("DEBUG 1 ", len(SA_SF), len(SA_DF), len(DA_SF), len(DA_DF))
-
     # make balanced datasets (for evaluation)   
     if make_balanced:
         if only_SADF_and_DASF:
@@ -370,7 +366,6 @@ def sample_pairs_single_epoch(author_domain_doc,
             DA_SF = DA_SF[:n]
             SA_SF = SA_SF[:n]
 
-    print("DEBUG 2 ", len(SA_SF), len(SA_DF), len(DA_SF), len(DA_DF))
 
     # consider only SA_DF and DA_SF pairs (for evaluation)
     if only_SADF_and_DASF:    

@@ -17,9 +17,7 @@ if [ ! -f "$prefix.train-truth.jsonl" ] ||  [ ! -f "$prefix.test-truth.jsonl" ];
     exit 1
 fi
 
-#tmpdir=$(mktemp --tmpdir=/tmp -d "process.XXXXXXXXXX")
-tmpdir=/home/moreaue/caca
-rm -rf $tmpdir
+tmpdir=$(mktemp --tmpdir=/tmp -d "process.XXXXXXXXXX")
 mkdir $tmpdir
 echo "tmpdir=$tmpdir" 1>&2
 cd $tmpdir
