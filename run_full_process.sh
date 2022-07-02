@@ -79,59 +79,89 @@ echo "7 steps done, copying preprocessing dir" 1>&2
 rm -rf "$prefix.data_preprocessed"
 cp -R "$tmpdir/data_preprocessed" "$prefix.data_preprocessed"
 
-echo "training model, part 1..." 1>&2
+if [ ! -s "$prefix.results_adhominem" ]; then
+    echo "training model, part 1..." 1>&2
 
-cd $tmpdir/training_adhominem
-python train_adhominem.py
-if [ $? -ne 0 ]; then
-    echo "ERROR" 1>&2
-    exit 1
+    cd $tmpdir/training_adhominem
+    python train_adhominem.py
+    if [ $? -ne 0 ]; then
+	echo "ERROR" 1>&2
+	exit 1
+    fi
+
+    echo "copying model 1..." 1>&2
+    rm -rf "$prefix.results_adhominem"
+    cp -R "$tmpdir/results_adhominem" "$prefix.results_adhominem"
+else
+    cp -R "$prefix.results_adhominem" "$tmpdir/results_adhominem"  
 fi
 
-echo "copying model 1..." 1>&2
-rm -rf "$prefix.results_adhominem"
-cp -R "$tmpdir/results_adhominem" "$prefix.results_adhominem"
+if [ ! -s "$prefix.results_o2d2" ]; then
+    echo "training model, part 2..." 1>&2
 
+    cd $tmpdir/training_o2d2
+    python train_o2d2.py
+    if [ $? -ne 0 ]; then
+	echo "ERROR" 1>&2
+	exit 1
+    fi
 
-echo "training model, part 2..." 1>&2
-
-cd $tmpdir/training_o2d2
-python train_o2d2.py
-if [ $? -ne 0 ]; then
-    echo "ERROR" 1>&2
-    exit 1
+    echo "copying model 2..." 1>&2
+    rm -rf "$prefix.results_o2d2"
+    cp -R "$tmpdir/results_o2d2" "$prefix.results_o2d2"
+else
+    cp -R "$prefix.results_o2d2" "$tmpdir/results_o2d2"
 fi
 
-echo "copying model 2..." 1>&2
-rm -rf "$prefix.results_o2d2"
-cp -R "$tmpdir/results_o2d2" "$prefix.results_o2d2"
+for traintest in train test; do
+
+    cd $tmpdir/preprocessing
+    if [ "$traintest" == "train" ]; then
+	python step6-exact-test-set.py "$prefix.train"
+	if [ $? -ne 0 ]; then
+	    echo "ERROR" 1>&2
+	    exit 1
+	fi
+    else
+	python step6-exact-test-set.py "$prefix.test"
+	if [ $? -ne 0 ]; then
+	    echo "ERROR" 1>&2
+	    exit 1
+	fi
+    fi
+    md5sum $tmpdir/data_preprocessed/pairs_val
+
+    cd $tmpdir/inference
+    echo "inference regular..." 1>&2
+    python run_inference.py
+    if [ $? -ne 0 ]; then
+	echo "ERROR" 1>&2
+	exit 1
+    fi
+
+    echo "getting predicted regular.." 1>&2
+    cat predicted.tsv >"$prefix.predicted.$traintest.regular.tsv"
+    rm -f predicted.tsv
 
 
-echo "inference regular..." 1>&2
-cd $tmpdir/inference
-python run_inference.py
-if [ $? -ne 0 ]; then
-    echo "ERROR" 1>&2
-    exit 1
-fi
+    mv "../results_adhominem" "../results_adhominem.regu"
+    mv "../results_o2d2" "../results_o2d2.regu"
+    cp -R "$DIR/pretrained_models/results_adhominem" "$DIR/pretrained_models/results_o2d2" ..
+    echo "inference special ..."
+    md5sum "$tmpdir/results_o2d2/results.txt"  "$tmpdir/results_adhominem/results.txt"   1>&2
+    python run_inference.py
+    if [ $? -ne 0 ]; then
+	echo "ERROR" 1>&2
+	exit 1
+    fi
 
-echo "getting predicted regular.." 1>&2
-cat predicted.tsv >"$prefix.predicted.regular.tsv"
-rm -f predicted.tsv
+    echo "getting predicted special.." 1>&2
+    cat predicted.tsv >"$prefix.predicted.$traintest.special.tsv"
+    rm -rf "../results_adhominem" "../results_o2d2"
+    mv "../results_adhominem.regu" "../results_adhominem"
+    mv "../results_o2d2.regu" "../results_o2d2"
 
-echo "inference special ..."
-
-rm -rf "../results_adhominem" "../results_o2d2"
-cp -R "$DIR/pretrained_models/results_adhominem" "$DIR/pretrained_models/results_o2d2" ..
-python run_inference.py
-if [ $? -ne 0 ]; then
-    echo "ERROR" 1>&2
-    exit 1
-fi
-
-echo "getting predicted special.." 1>&2
-cat predicted.tsv >"$prefix.predicted.special.tsv"
-
+done
 
 rm -rf $tmpdir
 echo "done." 1>&2
