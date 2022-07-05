@@ -18,7 +18,7 @@ if [ ! -f "$prefix.train-truth.jsonl" ] ||  [ ! -f "$prefix.test-truth.jsonl" ];
 fi
 
 tmpdir=$(mktemp --tmpdir=/tmp -d "process.XXXXXXXXXX")
-tmpdir='/home/moreaue/debug2'
+#tmpdir='/home/moreaue/debug2'
 mkdir $tmpdir
 echo "tmpdir=$tmpdir" 1>&2
 cd $tmpdir
@@ -114,8 +114,7 @@ else
     cp -R "$prefix.results_o2d2" "$tmpdir/results_o2d2"
 fi
 
-for traintest in train; do
-#for traintest in train test; do
+for traintest in train test; do
 
     cd $tmpdir/preprocessing
     if [ "$traintest" == "train" ]; then
