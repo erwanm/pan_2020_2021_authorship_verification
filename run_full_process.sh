@@ -18,6 +18,7 @@ if [ ! -f "$prefix.train-truth.jsonl" ] ||  [ ! -f "$prefix.test-truth.jsonl" ];
 fi
 
 tmpdir=$(mktemp --tmpdir=/tmp -d "process.XXXXXXXXXX")
+tmpdir='/home/moreaue/debug2'
 mkdir $tmpdir
 echo "tmpdir=$tmpdir" 1>&2
 cd $tmpdir
@@ -113,10 +114,12 @@ else
     cp -R "$prefix.results_o2d2" "$tmpdir/results_o2d2"
 fi
 
-for traintest in train test; do
+for traintest in train; do
+#for traintest in train test; do
 
     cd $tmpdir/preprocessing
     if [ "$traintest" == "train" ]; then
+#	python  step6_sample_pairs_val.py  "$prefix.train"
 	python step6-exact-test-set.py "$prefix.train"
 	if [ $? -ne 0 ]; then
 	    echo "ERROR" 1>&2
@@ -129,7 +132,6 @@ for traintest in train test; do
 	    exit 1
 	fi
     fi
-    md5sum $tmpdir/data_preprocessed/pairs_val
 
     cd $tmpdir/inference
     echo "inference regular..." 1>&2
@@ -148,7 +150,6 @@ for traintest in train test; do
     mv "../results_o2d2" "../results_o2d2.regu"
     cp -R "$DIR/pretrained_models/results_adhominem" "$DIR/pretrained_models/results_o2d2" ..
     echo "inference special ..."
-    md5sum "$tmpdir/results_o2d2/results.txt"  "$tmpdir/results_adhominem/results.txt"   1>&2
     python run_inference.py
     if [ $? -ne 0 ]; then
 	echo "ERROR" 1>&2

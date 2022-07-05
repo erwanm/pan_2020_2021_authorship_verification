@@ -51,7 +51,7 @@ pred_dml, pred_bfs, pred_ual, pred_o2d2, n_miss, conf_matrix, lev_L, lev_R, att_
 
 f = open(predict_text_output, 'w')
 for i,v in enumerate(pred_ual):
-    f.write('%d\t%f\t%f\n' % (i,v,pred_o2d2[i]))
+    f.write('%d\t%f\t%f\t%f\t%f\n' % (i,pred_dml[i],pred_bfs[i],v,pred_o2d2[i]))
 f.close()
 
 # compute confidence scores (p if p >= 0.5, otherwise 1-p)
