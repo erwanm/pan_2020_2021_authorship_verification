@@ -1,4 +1,9 @@
-# PAN 2020/2021 Authorship Verification Source Code
+
+The system described below was made by Benedikt Boenninghoff. It achieved best performance at the PAN 2021 Authorship Verification shared task.
+
+This fork was made by Erwan Moreau in order to adapt the system to the experiments described [here](https://github.com/erwanm/clg-authorship-experiments). The modifications are minor and mostly focused on feeding the system a different format of data.
+
+# PAN 2020/2021 Authorship Verification system 
 
 [_AdHominem_](https://arxiv.org/abs/1910.08144)  describes a Siamese network topology for (binary) authorship verification, 
 also known as pairwise (1:1) forensic text comparison. This implementation was developed for the [_PAN 2020_](https://pan.webis.de/clef20/pan20-web/index.html) 
